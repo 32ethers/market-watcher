@@ -75,7 +75,7 @@ app.get("/ip", async (req, res) => {
 app.get("/report_ip", async (req, res) => {
     params = req.query
     ip_info.ip = params["ip"]
-    ip_info.time = params["t"]
+    ip_info.time = new Date(params["t"] * 1000)
     res.send({"status": "0", "param_echo": ip_info})
 })
 app.listen(config.port, "0.0.0.0", () => {
