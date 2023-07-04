@@ -63,16 +63,20 @@ app.get('/', async (req, res) => {
 
     res.render("index", {items: result})
 })
-let ip_str = "unknown"
+let ip_info = {
+    ip: "unknown",
+    time: "unknown"
+}
 
 app.get("/ip", async (req, res) => {
-    res.render("ip", {ip_str: ip_str})
+    res.render("ip", {ip: ip_info})
 })
 
 app.get("/report_ip", async (req, res) => {
     params = req.query
-    ip_str = params["ip"]
-    res.send({"status": "0", "param_echo": ip_str})
+    ip_info.ip = params["ip"]
+    ip_info.time = params["t"]
+    res.send({"status": "0", "param_echo": ip_info})
 })
 app.listen(config.port, "0.0.0.0", () => {
     console.log(`market watcher app listening on port ${config.port}`)
