@@ -28,7 +28,12 @@ async function getTokenPrice() {
 async function getDollarPrice() {
     let resp = await axios.get("https://api.exchangerate-api.com/v4/latest/USD");
     let result = [];
-    let resp_gas = await axios.get("https://api.etherscan.io/api?module=gastracker&action=gasoracle")
+    let resp_gas = {}
+    try {
+        resp_gas = await axios.get("https://api.etherscan.io/api?module=gastracker&action=gasoracle")
+    } catch (e) {
+        resp_gas = {data: {result: {ProposeGasPrice: "unknown"}}}
+    }
     result.push({name: "美元对人民币", value: resp.data.rates.CNY},
         {name: "eth gas", value: resp_gas.data.result.ProposeGasPrice});
     return result;
