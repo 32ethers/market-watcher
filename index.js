@@ -35,7 +35,7 @@ async function getDollarPrice() {
         resp_gas = {data: {result: {ProposeGasPrice: "unknown"}}}
     }
     result.push({name: "美元对人民币", value: resp.data.rates.CNY},
-        {name: "eth gas", value: resp_gas.data.result.ProposeGasPrice});
+        {name: "eth gas", value: resp_gas.data.result.ProposeGasPrice + " GWei"});
     return result;
 }
 
