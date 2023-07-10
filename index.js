@@ -30,7 +30,7 @@ async function getDollarPrice() {
     let result = [];
     let resp_gas = await axios.get("https://api.etherscan.io/api?module=gastracker&action=gasoracle")
     result.push({name: "美元对人民币", value: resp.data.rates.CNY},
-        {name: "eth gas", value: resp.data.result.ProposeGasPrice});
+        {name: "eth gas", value: resp_gas.data.result.ProposeGasPrice});
     return result;
 }
 
