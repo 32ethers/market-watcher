@@ -20,12 +20,16 @@ async function getTokenPrice() {
     for (let i = 0; i < tokens.length; i++) {
         let close = tokenResponse[i].data.data[0].close;
         let open = tokenResponse[i].data.data[0].open;
-        tokenResult.push({name: tokens[i].name, value: close, rate: (100 * ((close - open) / open)).toFixed(2)});
+        let rate = (100 * ((close - open) / open)).toFixed(2);
+        let color = "info"
+        if (rate > 0) color = "danger"
+        else if (rate < 0) color = "success"
+        tokenResult.push({name: tokens[i].name, value: close, rate: rate, color: color});
     }
     return tokenResult;
 }
 
-async function getDollarPrice() {
+async function getOtherInfo() {
     let resp = await axios.get("https://api.exchangerate-api.com/v4/latest/USD");
     let result = [];
     let resp_gas = {}
@@ -34,7 +38,7 @@ async function getDollarPrice() {
     } catch (e) {
         resp_gas = {data: {result: {ProposeGasPrice: "unknown"}}}
     }
-    result.push({name: "美元对人民币", value: resp.data.rates.CNY},
+    result.push({name: "美元对人民币", value: "1 : " + resp.data.rates.CNY + " USD/CNY"},
         {name: "eth gas", value: resp_gas.data.result.ProposeGasPrice + " GWei"});
     return result;
 }
@@ -55,7 +59,11 @@ async function getStockPrice() {
         if (i >= stocks2Query.length)
             continue
         let info = stocks[i].split("~");
-        result.push({name: stocks2Query[i].name, value: info[3], rate: info[5]})
+        let rate = info[5]
+        let color = "info"
+        if (rate > 0) color = "danger"
+        else if (rate < 0) color = "success"
+        result.push({name: stocks2Query[i].name, value: info[3], rate: info[5], color: color})
     }
 
     return result;
@@ -63,12 +71,12 @@ async function getStockPrice() {
 
 app.get('/', async (req, res) => {
     let result = []
-    let [token, dollar, stock] = await Promise.all([getTokenPrice(), getDollarPrice(), getStockPrice()])
-    result.push(...token)
-    result.push(...stock)
-    result.push(...dollar)
+    let [token, other, stock] = await Promise.all([getTokenPrice(), getOtherInfo(), getStockPrice()])
+    // result.push(...token)
+    // result.push(...stock)
+    // result.push(...other)
 
-    res.render("index", {items: result})
+    res.render("index", {stocks: stock, tokens: token, other: other})
 })
 let ip_info = {
     ip: "unknown",
