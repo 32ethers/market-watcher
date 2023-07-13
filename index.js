@@ -76,7 +76,12 @@ app.get('/', async (req, res) => {
     // result.push(...stock)
     // result.push(...other)
 
-    res.render("index", {stocks: stock, tokens: token, other: other})
+    res.render("index", {
+        stocks: stock,
+        tokens: token,
+        other: other,
+        resp_time: (new Date()).toLocaleString()
+    })
 })
 let ip_info = {
     ip: "unknown",
